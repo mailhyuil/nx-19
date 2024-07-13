@@ -2,7 +2,9 @@
   "name": "@nx-19/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "db:migrate": "dotenv -e apps/server/.env.development -- prisma migrate dev"
+  },
   "private": true,
   "devDependencies": {
     "@angular-devkit/build-angular": "~18.0.0",
@@ -55,7 +57,7 @@
     "jest-preset-angular": "~14.1.0",
     "nx": "19.4.0",
     "postcss": "^8.4.5",
-    "prettier": "^2.6.2",
+    "prettier": "3.1.1",
     "prisma": "^5.16.2",
     "supertest": "^7.0.0",
     "tailwindcss": "^3.0.2",
