@@ -13,10 +13,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AttachmentModule } from './attachment/attachment.module';
 import { CommentModule } from './comment/comment.module';
+import { ImageModule } from './image/image.module';
 import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
+    ImageModule,
     AttachmentModule,
     CommentModule,
     PostModule,
