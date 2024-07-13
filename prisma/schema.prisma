@@ -22,7 +22,7 @@ model PostSnapshot {
     content String
     createdAt DateTime @default(now()) @map("created_at")
     postId String
-    post Post @relation(fields: [postId], references: [id])
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
     attachments AttachmentSnapshot[]
     @@map("post_snapshots")
 }
@@ -32,7 +32,7 @@ model Comment {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
     postId String
-    post Post @relation(fields: [postId], references: [id])
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
     snapshots CommentSnapshot[]
     @@map("comments")
 }
@@ -42,7 +42,7 @@ model CommentSnapshot {
     content String
     createdAt DateTime @default(now()) @map("created_at")
     commentId String
-    comment Comment @relation(fields: [commentId], references: [id])
+    comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
     attachments AttachmentSnapshot[]
     @@map("comment_snapshots")
 }
@@ -61,7 +61,7 @@ model AttachmentSnapshot {
     extension String?
     createdAt DateTime @default(now()) @map("created_at")
     attachmentId String
-    attachment Attachment @relation(fields: [attachmentId], references: [id])
+    attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
     postSnapshots PostSnapshot[]
     commentSnapshots CommentSnapshot[]
     @@map("attachment_snapshots")
