@@ -1,7 +1,7 @@
 import InputFileUploadComponent from '@/client/src/app/components/input-file-upload/input-file-upload.component';
 import { PostService } from '@/client/src/app/services/post.service';
 import { PostDto } from '@/server/src/app/post/post.dto';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormsModule,
   NonNullableFormBuilder,
@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { TestComponent } from '../../components/test/test.component';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -19,9 +20,10 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    TestComponent,
   ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   postService = inject(PostService);
   route = inject(ActivatedRoute);
   fb = inject(NonNullableFormBuilder);
@@ -34,36 +36,32 @@ export class HomeComponent implements OnInit {
   get id() {
     return this.route.snapshot.params['id'];
   }
-  posts: PostDto[] = [];
+  post = signal<PostDto | undefined>(undefined);
+  posts = signal<PostDto[]>([]);
 
-  ngOnInit(): void {
-    if (this.id) {
-      this.postService.findById(this.id).subscribe({
-        next: (res) => {
-          console.log('hi', res);
-          this.form.patchValue(res);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
-    }
-    this.postService.findAll().subscribe({
-      next: (res) => {
-        this.posts = res;
+  constructor() {
+    this.postService.findById(this.id).subscribe({
+      next: (post) => {
+        if (post) {
+          this.post.set(post);
+          this.form.patchValue(post);
+        }
       },
       error: (err) => {
         console.error(err);
       },
     });
+    this.postService.findAll().subscribe((posts) => {
+      this.posts.set(posts);
+    });
   }
 
   submit() {
     const body = this.form.getRawValue();
-
     this.postService.create(body, this.id).subscribe({
       next: (res) => {
         console.log(res);
+        this.posts;
       },
       error: (err) => {
         console.error(err);

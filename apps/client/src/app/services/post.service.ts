@@ -24,26 +24,36 @@ export class PostService implements OnDestroy {
   findAll() {
     if (!this.cache$) {
       this.cache$ = this.http
-        .get<PostDto[]>(`${this.API_ENDPOINT}`)
+        .get<PostDto[]>(`http://localhost:3000/api/v1/${this.API_ENDPOINT}`)
         .pipe(shareReplay(1), takeUntil(this.clearCache$));
     }
     return this.cache$;
   }
 
   findById(id: string) {
-    return this.http.get<PostDto>(`${this.API_ENDPOINT}/${id}`);
+    return this.http.get<PostDto>(
+      `http://localhost:3000/api/v1/${this.API_ENDPOINT}/${id}`,
+    );
   }
 
   create(body: CreatePostDto, id?: string) {
-    return this.http.post<PostDto>(`${this.API_ENDPOINT}${id ? id : ''}`, body);
+    return this.http.post<PostDto>(
+      `http://localhost:3000/api/v1/${this.API_ENDPOINT}${id ? id : ''}`,
+      body,
+    );
   }
 
   update(id: string, body: UpdatePostDto) {
-    return this.http.patch<PostDto>(`${this.API_ENDPOINT}/${id}`, body);
+    return this.http.patch<PostDto>(
+      `http://localhost:3000/api/v1/${this.API_ENDPOINT}/${id}`,
+      body,
+    );
   }
 
   delete(id: string) {
-    return this.http.delete<PostDto>(`${this.API_ENDPOINT}/${id}`);
+    return this.http.delete<PostDto>(
+      `http://localhost:3000/api/v1/${this.API_ENDPOINT}/${id}`,
+    );
   }
 
   clearCache() {

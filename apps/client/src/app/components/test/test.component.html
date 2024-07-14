@@ -1,0 +1,12 @@
+@switch (type()) {
+  @case (TEST_A_SERVICE) {
+    <div>type is a</div>
+  }
+  @case (TEST_B_SERVICE) {
+    <div>type is b</div>
+  }
+  @default {
+    <div>type is default</div>
+  }
+}
+<button (click)="test()">click me</button>

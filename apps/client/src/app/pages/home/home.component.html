@@ -1,22 +1,25 @@
 <form class="flex flex-col gap-2 p-5" [formGroup]="form" (ngSubmit)="submit()">
-  <input class="border p-2" formControlName="title" />
-  <input class="border p-2" formControlName="content" />
+  <input class="p-2 border" formControlName="title" />
+  <input class="p-2 border" formControlName="content" />
   <!-- files:
   <app-input-file-upload formControlName="files"></app-input-file-upload>
   file:
   <app-input-file-upload formControlName="file"></app-input-file-upload> -->
-  <button class="bg-blue-500 text-white rounded-lg font-bold p-2" type="submit">
+  <button class="p-2 font-bold text-white bg-blue-500 rounded-lg" type="submit">
     submit
   </button>
 </form>
-<div class="flex flex-col gap-2 p-5">
-  @for(post of posts; track post.id){
-  <div [routerLink]="['.', post.id]">
-    <p>{{ post.title }}</p>
-    <p>{{ post.content }}</p>
-    <button (click)="remove(post.id)">삭제</button>
+@if (posts(); as posts) {
+  <div class="flex flex-col gap-2 p-5">
+    @for (post of posts; track post.id) {
+      <div [routerLink]="['.', post.id]">
+        <p>{{ post.title }}</p>
+        <p>{{ post.content }}</p>
+        <button (click)="remove(post.id)">삭제</button>
+      </div>
+    } @empty {
+      <p>no posts</p>
+    }
   </div>
-  } @empty {
-  <p>no posts</p>
-  }
-</div>
+}
+<app-test></app-test>
