@@ -1,6 +1,6 @@
+import { ValueAccessorDirective } from '@/client/src/app/components/value-accessor.directive';
 import { CommonModule } from '@angular/common';
 import { Component, Input, booleanAttribute } from '@angular/core';
-import { ValueAccessorDirective } from '../value-accessor.directive';
 
 @Component({
   selector: 'app-input-file-upload',

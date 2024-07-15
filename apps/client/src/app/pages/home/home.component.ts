@@ -1,7 +1,7 @@
 import InputFileUploadComponent from '@/client/src/app/components/input-file-upload/input-file-upload.component';
+import { PostService } from '@/client/src/app/services/post.service';
 import { PostDto } from '@/server/src/app/post/post.dto';
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormsModule,
   NonNullableFormBuilder,
@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { TestComponent } from '../../components/test/test.component';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -19,10 +20,11 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    TestComponent,
   ],
 })
-export class HomeComponent implements OnInit {
-  http = inject(HttpClient);
+export class HomeComponent {
+  postService = inject(PostService);
   route = inject(ActivatedRoute);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
@@ -34,48 +36,41 @@ export class HomeComponent implements OnInit {
   get id() {
     return this.route.snapshot.params['id'];
   }
-  posts: PostDto[] = [];
-  ngOnInit(): void {
-    if (this.id) {
-      this.http
-        .get<PostDto>(`http://localhost:3000/api/v1/posts/${this.id}`)
-        .subscribe({
-          next: (res) => {
-            console.log('hi', res);
-            this.form.patchValue(res);
-          },
-          error: (err) => {
-            console.error(err);
-          },
-        });
-    }
-    this.http.get<PostDto[]>('http://localhost:3000/api/v1/posts').subscribe({
+  post = signal<PostDto | undefined>(undefined);
+  posts = signal<PostDto[]>([]);
+
+  constructor() {
+    this.postService.findById(this.id).subscribe({
+      next: (post) => {
+        if (post) {
+          this.post.set(post);
+          this.form.patchValue(post);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+    this.postService.findAll().subscribe((posts) => {
+      this.posts.set(posts);
+    });
+  }
+
+  submit() {
+    const body = this.form.getRawValue();
+    this.postService.create(body, this.id).subscribe({
       next: (res) => {
-        this.posts = res;
+        console.log(res);
+        this.posts;
       },
       error: (err) => {
         console.error(err);
       },
     });
   }
-  submit() {
-    const body = this.form.value;
-    this.http
-      .post<PostDto>(
-        `http://localhost:3000/api/v1/posts/${this.id ? this.id : ''}`,
-        body
-      )
-      .subscribe({
-        next: (res) => {
-          console.log(res);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
-  }
+
   remove(id: string) {
-    this.http.delete(`http://localhost:3000/api/v1/posts/${id}`).subscribe({
+    this.postService.delete(id).subscribe({
       next: (res) => {
         console.log(res);
       },
