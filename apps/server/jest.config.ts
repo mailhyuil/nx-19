@@ -8,4 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/server',
+  setupFilesAfterEnv: ['<rootDir>/src/prisma/test/client.ts'],
 };

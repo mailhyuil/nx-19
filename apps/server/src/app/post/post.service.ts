@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreatePostDto, PostDto, UpdatePostDto } from './post.dto';
@@ -60,6 +60,9 @@ export class PostService {
             },
           },
         },
+      })
+      .catch((error) => {
+        throw new NotFoundException('Post not found');
       });
     return plainToInstance(PostDto, found);
   }
