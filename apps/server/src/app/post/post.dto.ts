@@ -1,17 +1,17 @@
 import { PartialType } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { AttachmentDto } from '../attachment/attachment.dto';
+import { CommentDto } from '../comment/comment.dto';
 
 export class PostDto {
-  @Expose({
-    name: 'postId',
-  })
   id: string;
   title: string;
   content: string;
   createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
   attachments: AttachmentDto[];
+  comments: CommentDto[];
 }
 
 export class CreatePostDto {

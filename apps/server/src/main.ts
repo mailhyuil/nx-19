@@ -4,9 +4,12 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { AppModule } from './app/app.module';
+import { WinstonProvider } from './providers/winston.provider';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {});
+  const app = await NestFactory.create(AppModule, {
+    logger: new WinstonProvider(),
+  });
 
   /** Logger */
   app.use(morgan('combined'));

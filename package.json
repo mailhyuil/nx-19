@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "db:migrate": "dotenv -e apps/server/.env.development -- prisma migrate dev"
+    "db:push": "dotenv -e apps/server/.env.development -- prisma db push"
   },
   "private": true,
   "devDependencies": {

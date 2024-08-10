@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { CommentDto } from '../comment/comment.dto';
 import { PostDto } from '../post/post.dto';
 
 export class AttachmentDto {
@@ -8,10 +7,7 @@ export class AttachmentDto {
   url: string;
   extension: string;
   createdAt: Date;
-  attachmentId: string;
-  attachment: AttachmentDto;
   posts: PostDto[];
-  comments: CommentDto[];
 }
 
 export class CreateAttachmentDto {

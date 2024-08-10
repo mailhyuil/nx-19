@@ -9,8 +9,12 @@ datasource db {
 
 model Post {
     id    String      @id @default(cuid())
+    title String
+    content String
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
+    deletedAt DateTime? @map("deleted_at")
+    attachments Attachment[]
     comments Comment[]
     snapshots PostSnapshot[]
     @@map("posts")
@@ -21,18 +25,23 @@ model PostSnapshot {
     title String
     content String
     createdAt DateTime @default(now()) @map("created_at")
-    postId String
+    postId String @map("post_id")
     post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+    comments CommentSnapshot[]
     attachments AttachmentSnapshot[]
     @@map("post_snapshots")
 }
 
 model Comment {
     id    String      @id @default(cuid())
+    content String
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
-    postId String
     post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId String @map("post_id")
+    parent Comment? @relation("comment_comment",fields: [parentId], references: [id], onDelete: Cascade)
+    parentId String? @map("parent_id")
+    children Comment[] @relation("comment_comment")
     snapshots CommentSnapshot[]
     @@map("comments")
 }
@@ -41,15 +50,24 @@ model CommentSnapshot {
     id    String      @id @default(cuid())
     content String
     createdAt DateTime @default(now()) @map("created_at")
-    commentId String
     comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-    attachments AttachmentSnapshot[]
+    commentId String @map("comment_id")
+    parent CommentSnapshot @relation("comment_snapshot_comment_snapshot",fields: [parentId], references: [id], onDelete: Cascade)
+    parentId String @map("parent_id")
+    children CommentSnapshot[] @relation("comment_snapshot_comment_snapshot")
+    post PostSnapshot @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId String @map("post_id")
     @@map("comment_snapshots")
 }
 
 model Attachment {
     id    String      @id @default(cuid())
+    name  String
+    url   String
+    extension String?
     createdAt DateTime @default(now()) @map("created_at")
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId String @map("post_id")
     snapshots AttachmentSnapshot[]
     @@map("attachments")
 }
@@ -60,9 +78,9 @@ model AttachmentSnapshot {
     url   String
     extension String?
     createdAt DateTime @default(now()) @map("created_at")
-    attachmentId String
     attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
-    postSnapshots PostSnapshot[]
-    commentSnapshots CommentSnapshot[]
+    attachmentId String @map("attachment_id")
+    post PostSnapshot @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId String @map("post_id")
     @@map("attachment_snapshots")
 }

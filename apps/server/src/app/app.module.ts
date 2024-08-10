@@ -1,11 +1,19 @@
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD, APP_PIPE, DiscoveryModule } from '@nestjs/core';
+import {
+  APP_FILTER,
+  APP_GUARD,
+  APP_INTERCEPTOR,
+  APP_PIPE,
+  DiscoveryModule,
+} from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ClsModule } from 'nestjs-cls';
 import { HttpExceptionFilter } from '../filters/http-exception.filter';
+import { Test1Interceptor } from '../interceptors/test1.interceptor';
+import { Test2Interceptor } from '../interceptors/test2.interceptor';
 import { GlobalValidationPipe } from '../pipes/global-validation.pipe';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaModule } from './../prisma/prisma.module';
@@ -61,6 +69,14 @@ import { PostModule } from './post/post.module';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: Test2Interceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: Test1Interceptor,
     },
   ],
 })
